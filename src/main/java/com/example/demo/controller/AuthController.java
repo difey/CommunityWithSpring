@@ -11,6 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class AuthController {
 
@@ -37,7 +40,8 @@ public class AuthController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
                            @RequestParam(name = "state")String state,
-                           Model model){
+                           Model model,
+                           HttpServletRequest request){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setRedirect_uri(githubCallback);
@@ -46,15 +50,21 @@ public class AuthController {
         accessTokenDTO.setClient_secret(githubClientSecret);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO).split("&")[0].split("=")[1];
         GithubUser githubUser = githubProvider.getUser(accessToken);
-        if(githubUser!=null) System.out.println(githubUser.getId());
-        model.addAttribute("name",githubUser.getName());
-        return "hello";
+        if(githubUser.getName()!=null) {
+            request.getSession().setAttribute("user", githubUser);
+//            model.addAttribute("name",githubUser.getName());
+            return "redirect:/";
+        }
+        else{
+            return "redirect:hello";
+        }
     }
 
     @GetMapping("/callback_google")
     public String callbackGoogle(@RequestParam(name = "code")String code,
                                  @RequestParam(name = "state")String state,
-                                 Model model){
+                                 Model model,
+                                 HttpServletRequest request){
         if(!state.equals("1")){
             return "error";
         }
@@ -66,8 +76,14 @@ public class AuthController {
         googleTokenDTO.setGrant_type(googleGrantType);
         GoogleIDTokenDTO googleIDTokenDTO = googleProvider.getGoogleIDToken(googleTokenDTO);
         GoogleUser googleUser = googleProvider.parseJWT(googleIDTokenDTO.getId_token());
-        model.addAttribute("name",googleUser.getName());
-        return "hello";
+        if(googleUser.getName()!=null){
+            request.getSession().setAttribute("user", googleUser);
+//            model.addAttribute("name",googleUser.getName());
+            return "redirect:/";
+        }else{
+            return "redirect:hello";
+        }
+
     }
 
 }
