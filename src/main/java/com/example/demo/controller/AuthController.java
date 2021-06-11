@@ -1,18 +1,19 @@
 package com.example.demo.controller;
 
 import com.example.demo.DTO.*;
+import com.example.demo.Mapper.UserMapper;
+import com.example.demo.Model.User;
 import com.example.demo.Provider.GithubProvider;
 import com.example.demo.Provider.GoogleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Controller
 public class AuthController {
@@ -36,6 +37,9 @@ public class AuthController {
     private String googleCallback;
     @Value("${google.client.grant.type}")
     private String googleGrantType;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
@@ -78,7 +82,13 @@ public class AuthController {
         GoogleUser googleUser = googleProvider.parseJWT(googleIDTokenDTO.getId_token());
         if(googleUser.getName()!=null){
             request.getSession().setAttribute("user", googleUser);
-//            model.addAttribute("name",googleUser.getName());
+            User user = new User();
+            user.setAccountId(googleUser.getSub());
+            user.setName(googleUser.getName());
+            user.setToken(UUID.randomUUID().toString());
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModify(user.getGmtCreate());
+            userMapper.insert(user);
             return "redirect:/";
         }else{
             return "redirect:hello";
