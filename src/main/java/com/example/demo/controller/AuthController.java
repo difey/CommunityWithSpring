@@ -12,7 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -68,7 +70,8 @@ public class AuthController {
     public String callbackGoogle(@RequestParam(name = "code")String code,
                                  @RequestParam(name = "state")String state,
                                  Model model,
-                                 HttpServletRequest request){
+                                 HttpServletRequest request,
+                                 HttpServletResponse response){
         if(!state.equals("1")){
             return "error";
         }
@@ -81,14 +84,16 @@ public class AuthController {
         GoogleIDTokenDTO googleIDTokenDTO = googleProvider.getGoogleIDToken(googleTokenDTO);
         GoogleUser googleUser = googleProvider.parseJWT(googleIDTokenDTO.getId_token());
         if(googleUser.getName()!=null){
-            request.getSession().setAttribute("user", googleUser);
+//            request.getSession().setAttribute("user", googleUser);
             User user = new User();
             user.setAccountId(googleUser.getSub());
             user.setName(googleUser.getName());
-            user.setToken(UUID.randomUUID().toString());
+            String token =UUID.randomUUID().toString();
+            user.setToken(token);
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModify(user.getGmtCreate());
             userMapper.insert(user);
+            response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else{
             return "redirect:hello";

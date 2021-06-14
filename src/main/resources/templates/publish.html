@@ -1,7 +1,7 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Community</title>
+    <title>发布</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -17,9 +17,11 @@
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="css/community.css">
 
 </head>
 <body>
+
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -40,9 +42,7 @@
                     <input type="text" class="form-control" placeholder="搜索问题">
                 </div>
                 <button type="submit" class="btn btn-default">搜索</button>
-                <a class="btn btn-default" href="/publish" role="button">发帖</a>
             </form>
-
             <ul class="nav navbar-nav navbar-right">
 <!--                <li th:if="${session.user == null}"><a href="https://github.com/login/oauth/authorize?client_id=a9d1d465631a2d4e6d84&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登陆Github</a></li>-->
                 <li th:if="${session.user == null}"><a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=3192245257-bq5pi3th6vn4lmot7k9a3rm42eg8on6f.apps.googleusercontent.com&scope=openid%20email&redirect_uri=http://localhost:8887/callback_google&state=1&response_type=code">登陆Google</a></li>
@@ -59,7 +59,41 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<p>Get your greeting <a href="/hello">here</a></p>
+<div class="main">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-xs-12 col-sm-12" style="">
+            <h2><span class="glyphicon glyphicon glyphicon-plus-sign" aria-hidden="true">发起</span></h2>
+            <hr/>
+            <form action="/publish" method="post">
+                <div class="form-group">
+                    <label for="title">问题标题：</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题" th:value="${title}">
+                </div>
+                <div class="form-group">
+                    <label for="description">问题补充（必填，请参照提示）：</label>
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" th:text="${description}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag">添加标签：</label>
+                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签，以','隔开" th:value="${tag}">
+                </div>
+                <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}!=null"></div>
+                <button type="submit" class="btn btn-success btn-publish">发布</button>
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-12 col-xs-12 col-sm-12" style="">
+            <h3>问题发起指南</h3>
+            <br>
+            • 问题标题: 请用精简的语言描述您发布的问题，不超过25字
+            <br>
+            • 问题补充: 详细补充您的问题内容，并确保问题描述清晰直观, 并提供一些相关的资料
+            <br>
+            • 选择标签: 选择一个或者多个合适的标签，用逗号隔开，每个标签不超过10个字
+        </div>
+    </div>
+</div>
+</div>
 
 </body>
 </html>
