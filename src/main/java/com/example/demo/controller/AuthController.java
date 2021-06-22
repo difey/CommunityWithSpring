@@ -90,6 +90,7 @@ public class AuthController {
             user.setName(googleUser.getName());
             String token =UUID.randomUUID().toString();
             user.setToken(token);
+            user.setAvatarUrl(googleUser.getPicture());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModify(user.getGmtCreate());
             userMapper.insert(user);

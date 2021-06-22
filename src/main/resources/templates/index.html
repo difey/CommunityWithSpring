@@ -45,7 +45,7 @@
 
             <ul class="nav navbar-nav navbar-right">
 <!--                <li th:if="${session.user == null}"><a href="https://github.com/login/oauth/authorize?client_id=a9d1d465631a2d4e6d84&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登陆Github</a></li>-->
-                <li th:if="${session.user == null}"><a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=3192245257-bq5pi3th6vn4lmot7k9a3rm42eg8on6f.apps.googleusercontent.com&scope=openid%20email&redirect_uri=http://localhost:8887/callback_google&state=1&response_type=code">登陆Google</a></li>
+                <li th:if="${session.user == null}"><a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=3192245257-bq5pi3th6vn4lmot7k9a3rm42eg8on6f.apps.googleusercontent.com&scope=openid%20email%20profile&redirect_uri=http://localhost:8887/callback_google&state=1&response_type=code">登陆Google</a></li>
                 <li class="dropdown" th:if="${session.user!=null}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.getName()}"><span class="caret"></span></a>
                     <ul class="dropdown-menu">

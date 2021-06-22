@@ -4,12 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.example.demo.DTO.GoogleIDTokenDTO;
 import com.example.demo.DTO.GoogleTokenDTO;
 import com.example.demo.DTO.GoogleUser;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -40,7 +37,8 @@ public class GoogleProvider {
 
     public GoogleUser parseJWT(String jwt) {
         String[] code = jwt.split("\\.");
-        GoogleUser googleUser = JSON.parseObject(new String(Base64.getDecoder().decode(code[1])), GoogleUser.class);
+        String str = new String(Base64.getDecoder().decode(code[1]));
+        GoogleUser googleUser = JSON.parseObject(str, GoogleUser.class);
         return googleUser;
     }
 
