@@ -11,3 +11,14 @@ body{
     float: right;
     margin-bottom: 15px;
 }
+
+.media-object{
+    height: 61px;
+    width: 61px;
+}
+
+.question-description-info{
+    font-size: 12px;
+    font-weight: normal;
+    color: #999;
+}
